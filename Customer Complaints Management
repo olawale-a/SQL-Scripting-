@@ -1,0 +1,71 @@
+-- Create Customers Table
+CREATE TABLE customers (
+    customer_id INT PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    phone_number VARCHAR(20)
+);
+
+-- Create Complaints Table
+CREATE TABLE complaints (
+    complaint_id INT PRIMARY KEY,
+    customer_id INT,
+    complaint_date DATE NOT NULL,
+    complaint_text VARCHAR(255) NOT NULL,
+    FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
+);
+
+-- Create Resolutions Table
+CREATE TABLE resolutions (
+    resolution_id INT PRIMARY KEY,
+    complaint_id INT,
+    resolution_date DATE NOT NULL,
+    resolution_text VARCHAR(255) NOT NULL,
+    FOREIGN KEY (complaint_id) REFERENCES complaints(complaint_id)
+);
+
+-- Insert Sample Data into Customers Table
+INSERT INTO customers VALUES
+    (1, 'John', 'Doe', 'john.doe@example.com', '123-456-7890'),
+    (2, 'Jane', 'Smith', 'jane.smith@example.com', '987-654-3210'),
+    (3, 'Mike', 'Johnson', 'mike.johnson@example.com', NULL);
+
+-- Insert Sample Data into Complaints Table
+INSERT INTO complaints VALUES
+    (1, 1, '2022-01-15', 'Product quality issue'),
+    (2, 2, '2022-02-01', 'Late delivery of order'),
+    (3, 1, '2022-03-10', 'Customer service complaint'),
+    (4, 3, '2022-04-20', 'Billing discrepancy');
+
+-- Insert Sample Data into Resolutions Table
+INSERT INTO resolutions VALUES
+    (1, 1, '2022-01-20', 'Issued refund for the product'),
+    (2, 2, '2022-02-10', 'Provided a discount on the next order'),
+    (3, 1, '2022-03-15', 'Apologized and offered a discount for future purchases'),
+    (4, 3, '2022-04-25', 'Corrected billing error and refunded the excess amount');
+
+-- QUERY:Retrieve all complaints along with customer information
+SELECT 
+    c.complaint_id,
+    c.complaint_date,
+    c.complaint_text,
+    cust.first_name,
+    cust.last_name,
+    cust.email
+FROM 
+    complaints c
+JOIN 
+    customers cust ON c.customer_id = cust.customer_id;
+
+-- QUERY:Retrieve resolutions for specific complaints
+SELECT 
+    r.resolution_id,
+    r.resolution_date,
+    r.resolution_text,
+    c.complaint_text
+FROM 
+    resolutions r
+JOIN 
+    complaints c ON r.complaint_id = c.complaint_id;
+
