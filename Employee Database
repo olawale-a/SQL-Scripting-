@@ -1,0 +1,68 @@
+-- Create Departments Table
+CREATE TABLE departments (
+    department_id INT PRIMARY KEY,
+    department_name VARCHAR(50) NOT NULL
+);
+
+-- Create Positions Table
+CREATE TABLE positions (
+    position_id INT PRIMARY KEY,
+    position_name VARCHAR(50) NOT NULL
+);
+
+-- Create Employees Table
+CREATE TABLE employees (
+    employee_id INT PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    department_id INT,
+    position_id INT,
+    hire_date DATE,
+    salary DECIMAL(10, 2),
+    FOREIGN KEY (department_id) REFERENCES departments(department_id),
+    FOREIGN KEY (position_id) REFERENCES positions(position_id)
+);
+
+-- Insert Sample Data into Departments Table
+INSERT INTO departments VALUES
+    (1, 'HR'),
+    (2, 'IT'),
+    (3, 'Finance');
+
+-- Insert Sample Data into Positions Table
+INSERT INTO positions VALUES
+    (1, 'Manager'),
+    (2, 'Developer'),
+    (3, 'Accountant');
+
+-- Insert Sample Data into Employees Table
+INSERT INTO employees VALUES
+    (1, 'John', 'Doe', 1, 1, '2022-01-15', 70000.00),
+    (2, 'Jane', 'Smith', 2, 2, '2022-02-01', 60000.00),
+    (3, 'Mike', 'Johnson', 1, 2, '2022-03-10', 55000.00),
+    (4, 'Alice', 'Brown', 3, 3, '2022-04-20', 65000.00);
+
+-- QUERY: Retrieve all employees along with their department and position 
+SELECT 
+    e.employee_id,
+    e.first_name,
+    e.last_name,
+    d.department_name,
+    p.position_name
+FROM 
+    employees e
+JOIN 
+    departments d ON e.department_id = d.department_id
+JOIN 
+    positions p ON e.position_id = p.position_id;
+
+-- QUERY: Calculate the average salary for each department
+SELECT 
+    d.department_name,
+    AVG(e.salary) AS avg_salary
+FROM 
+    employees e
+JOIN 
+    departments d ON e.department_id = d.department_id
+GROUP BY 
+    d.department_name;
