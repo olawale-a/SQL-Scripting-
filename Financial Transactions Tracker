@@ -1,0 +1,68 @@
+-- Create Transaction Types Table
+CREATE TABLE transaction_types (
+    type_id INT PRIMARY KEY,
+    type_name VARCHAR(50) NOT NULL
+);
+
+-- Create Accounts Table
+CREATE TABLE accounts (
+    account_id INT PRIMARY KEY,
+    account_name VARCHAR(50) NOT NULL
+);
+
+-- Create Transactions Table
+CREATE TABLE transactions (
+    transaction_id INT PRIMARY KEY,
+    transaction_date DATE NOT NULL,
+    amount DECIMAL(10, 2) NOT NULL,
+    account_id INT,
+    type_id INT,
+    description VARCHAR(255),
+    FOREIGN KEY (account_id) REFERENCES accounts(account_id),
+    FOREIGN KEY (type_id) REFERENCES transaction_types(type_id)
+);
+
+-- Insert Sample Data into Transaction Types Table
+INSERT INTO transaction_types VALUES
+    (1, 'Income'),
+    (2, 'Expense'),
+    (3, 'Transfer');
+
+-- Insert Sample Data into Accounts Table
+INSERT INTO accounts VALUES
+    (1, 'Savings Account'),
+    (2, 'Credit Card'),
+    (3, 'Checking Account');
+
+-- Insert Sample Data into Transactions Table
+INSERT INTO transactions VALUES
+    (1, '2022-01-15', 5000.00, 1, 1, 'Salary Deposit'),
+    (2, '2022-02-01', 1500.00, 3, 2, 'Grocery Shopping'),
+    (3, '2022-03-10', -1000.00, 2, 3, 'Transfer to Savings'),
+    (4, '2022-04-20', -50.00, 3, 2, 'Dinner at Restaurant');
+
+-- QUERY: Retrieve all transactions with their types, account names, and amounts
+SELECT 
+    t.transaction_id,
+    t.transaction_date,
+    tt.type_name,
+    a.account_name,
+    t.amount,
+    t.description
+FROM 
+    transactions t
+JOIN 
+    transaction_types tt ON t.type_id = tt.type_id
+JOIN 
+    accounts a ON t.account_id = a.account_id;
+
+-- QUERY: Calculate the total income and expenses
+SELECT 
+    tt.type_name,
+    SUM(t.amount) AS total_amount
+FROM 
+    transactions t
+JOIN 
+    transaction_types tt ON t.type_id = tt.type_id
+GROUP BY 
+    tt.type_name;
